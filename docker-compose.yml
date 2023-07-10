@@ -1,0 +1,62 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"
+    image: digitalwallet/digital-management-wallet
+    container_name: digital-wallet-service
+    environment:
+      - OTEL_SERVICE_NAME=digital-wallet-management
+      - OTEL_TRACES_EXPORTER=jaeger
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_EXPORTER_JAEGER_TIMEOUT=40000
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+    networks:
+      - digital-wallet-network
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14250:14250"
+    networks:
+      - digital-wallet-network
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    restart: always
+    networks:
+      - digital-wallet-network
+  grafana:
+    image: grafana/grafana
+    user: "$UID:$GID"
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SERVER_DOMAIN=admin
+    networks:
+      - digital-wallet-network
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - digital-wallet-network
+networks:
+  digital-wallet-network: {}

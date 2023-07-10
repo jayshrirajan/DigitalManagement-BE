@@ -1,0 +1,9 @@
+# ignores all IntelliJ IDE specific files
+.idea/
+
+# ignores all gradle cached files
+.gradle/
+
+# ignores all the build generated files
+build/
+build/resources

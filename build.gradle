@@ -1,0 +1,62 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.0.4'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+group 'com.msys.digitalwallet'
+version '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+  //  implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+    implementation 'org.modelmapper:modelmapper:3.1.1'
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    implementation 'com.plaid:plaid-java:13.4.0'
+    implementation group: 'org.jasypt', name: 'jasypt', version: '1.9.3'
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    implementation 'com.plaid:plaid-java:13.4.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'redis.clients:jedis'
+    implementation group: 'com.sendgrid', name: 'sendgrid-java', version: '4.9.3'
+    implementation group: "com.twilio.sdk", name: "twilio", version: "9.2.5"
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.10.0'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '3.0.5'
+    implementation group: 'io.micrometer', name: 'micrometer-registry-prometheus', version: '1.10.5'
+    compileOnly 'org.projectlombok:lombok'
+    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    implementation 'org.keycloak:keycloak-admin-client:14.0.0'
+    implementation group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.15.6.Final'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+bootBuildImage {
+    imageName = "swatimsys/digital-wallet-management"
+    publish = true
+    docker {
+        publishRegistry {
+            username = "swatimsys"
+            password = 'Developer3188$'
+        }
+    }
+}
