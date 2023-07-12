@@ -370,8 +370,10 @@ public class WalletAccountService {
                     // Updating wallet balance after transaction
                     BigDecimal walletBalance = userWalletAccount.getAccountBalance();
                     userWalletAccount.setAccountBalance(walletBalance.subtract(BigDecimal.valueOf(requestedAmount)));
-                    userWalletAccountRepository.save(userWalletAccount).subscribe(wallet ->
-                            log.debug(String.format("Wallet balance is updated in wallet for user %s", userId)));
+                    userWalletAccountRepository.save(userWalletAccount).subscribe(wallet -> {
+                        redisService.setValue(wallet.getUserId(), walletAccountMapper.toApiUserWalletAccount(wallet));
+                        log.debug(String.format("Wallet balance is updated in wallet for user %s", userId));
+                    });
 
                     return Mono.just(dbEntryMap);
                 }).onErrorMap( t->{
@@ -421,9 +423,10 @@ public class WalletAccountService {
                     // Updating wallet balance after transaction
                     BigDecimal walletBalance = userWalletAccount.getAccountBalance();
                     userWalletAccount.setAccountBalance(walletBalance.add(BigDecimal.valueOf( walletTransactionExecuteRequest.getAmount().getValue())));
-                    userWalletAccountRepository.save(userWalletAccount).subscribe(wallet ->
-                            log.debug(String.format("Wallet balance is updated in wallet for user %s", userId)));
-
+                    userWalletAccountRepository.save(userWalletAccount).subscribe(wallet -> {
+                        redisService.setValue(wallet.getUserId(), walletAccountMapper.toApiUserWalletAccount(wallet));
+                        log.debug(String.format("Wallet balance is updated in wallet for user %s", userId));
+                    });
                     return Mono.just(dbEntryMap);
                 }).onErrorMap( t->{
                             if(t instanceof ValidationException){
